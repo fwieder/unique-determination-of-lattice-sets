@@ -133,18 +133,21 @@ def max_z(A):
     return max(Max, -Min)
 
 
-## returns True if A is a convex lattice set, returns false if is not a convex lattice set, or if A is not full dimensional
+## returns True if A is a convex lattice set, returns false if is not a convex lattice set
 def is_cls(A):
-    ##try:
     hull = ConvexHull(np.array(A),qhull_options="QJ")
-    ##except:
-      ##  return False
     equations = hull.equations
     tol = 1e-12
+    
+    ## genearte a bounding box, in which we are looking for points that are in the convex hull of A, but not in the
+    ## set A itself. If there is such a point, A is not a convex lattice set.
     if len(A[0]) == 2:
         bound = box(max_x(A),max_y(A))
     if len(A[0]) == 3:
         bound = box_3d(max_x(A),max_y(A),max_z(A))
+    
+    ## check for all points in the box if they are in he convex hull of A. Since ConvexHull.equations yields Ax <= -b, we, multiply the 
+    ## the point with the first columns of equations and check it the entries are all smaller than -b plus a tolerance.
     for x in bound:
         if x not in A:
             vec = np.dot(equations[:,:-1],np.array(x).T)
@@ -298,18 +301,3 @@ def c_examples_3d(bx,by,bz,k,plot=False):
             set_plot_3d(x)
     
     return equals
-    
-
-## returns the set that is symmetric about the x-axis
-def x_mirror(A):
-    for i,x in enumerate(A):
-        A[i] = (-x[0],x[1])
-    return A
-
-
-
-def zhou_set(A,n):
-    Amat = np.array(A)
-    U = np.array((-1,1),(0,1))
-    return np.dot(U,Amat)
-   
