@@ -200,7 +200,6 @@ def c_examples(card,box):
             printProgressBar(i, os_sets_card, starttime=start)             
         if is_cls(A):
             os_cls.append(A)
-    print("Time finished: " + str(time.perf_counter()-start))
     
     print("\nThere are", len(os_cls), "origin-symmetric, convex lattice sets with cardinality", card,"in the box.")
     
